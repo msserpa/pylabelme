@@ -188,6 +188,7 @@ class Shape(object):
 
     # msserpa: this new version of moveVertex is used to handle the moves and
     # keep the polygon a square.def moveVertexBy(self, i, offset):
+    def moveVertexBy(self, i, offset):
         if i == 0:
             if offset.x() >= 0 or offset.y() >= 0:
                 offset = QPointF(+0.5, +0.5)
