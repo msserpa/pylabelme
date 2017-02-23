@@ -76,11 +76,35 @@ class Shape(object):
         assert len(self.points) > 2
         self._closed = True
 
-    def addPoint(self, point):
+    # msserpa: it is the original addPoint. Now it's used to add points from a file.
+    def addPointOld(self, point):
         if self.points and point == self.points[0]:
             self.close()
         else:
             self.points.append(point)
+
+    # msserpa: this new version of addPoint wait for user draw two points:
+    # a center point (points[0]) and a radius point (points[1]) which are
+    # used to draw a square.
+    def addPoint(self, point):
+        self.points.append(point)
+        if len(self.points) == 2:
+            dist = distance(self.points[1] - self.points[0])
+
+            a = QPointF(self.points[0].x() - dist, self.points[0].y() - dist)
+            b = QPointF(self.points[0].x() - dist, self.points[0].y() + dist)
+            c = QPointF(self.points[0].x() + dist, self.points[0].y() + dist)
+            d = QPointF(self.points[0].x() + dist, self.points[0].y() - dist)
+
+            self.popPoint()
+            self.popPoint()
+
+            self.points.append(a)
+            self.points.append(b)
+            self.points.append(c)
+            self.points.append(d)
+
+            self.close()            
 
     def popPoint(self):
         if self.points:
@@ -162,8 +186,29 @@ class Shape(object):
     def moveBy(self, offset):
         self.points = [p + offset for p in self.points]
 
+    # msserpa: this new version of moveVertex is used to handle the moves and
+    # keep the polygon a square.
     def moveVertexBy(self, i, offset):
-        self.points[i] = self.points[i] + offset
+        if i == 0:
+            self.points[0] = QPointF(self.points[0].x() + offset.x(), self.points[0].y() + offset.y())
+            self.points[1] = QPointF(self.points[1].x() + offset.x(), self.points[1].y() - offset.y())
+            self.points[2] = QPointF(self.points[2].x() - offset.x(), self.points[2].y() - offset.y())
+            self.points[3] = QPointF(self.points[3].x() - offset.x(), self.points[3].y() + offset.y())            
+        elif i == 1:
+            self.points[0] = QPointF(self.points[0].x() + offset.x(), self.points[0].y() - offset.y())
+            self.points[1] = QPointF(self.points[1].x() + offset.x(), self.points[1].y() + offset.y())
+            self.points[2] = QPointF(self.points[2].x() - offset.x(), self.points[2].y() + offset.y())
+            self.points[3] = QPointF(self.points[3].x() - offset.x(), self.points[3].y() - offset.y())
+        elif i == 2:
+            self.points[0] = QPointF(self.points[0].x() - offset.x(), self.points[0].y() - offset.y())
+            self.points[1] = QPointF(self.points[1].x() - offset.x(), self.points[1].y() + offset.y())
+            self.points[2] = QPointF(self.points[2].x() + offset.x(), self.points[2].y() + offset.y())
+            self.points[3] = QPointF(self.points[3].x() + offset.x(), self.points[3].y() - offset.y())
+        elif i == 3:
+            self.points[0] = QPointF(self.points[0].x() - offset.x(), self.points[0].y() + offset.y())
+            self.points[1] = QPointF(self.points[1].x() - offset.x(), self.points[1].y() - offset.y())
+            self.points[2] = QPointF(self.points[2].x() + offset.x(), self.points[2].y() - offset.y())
+            self.points[3] = QPointF(self.points[3].x() + offset.x(), self.points[3].y() + offset.y())
 
     def highlightVertex(self, i, action):
         self._highlightIndex = i

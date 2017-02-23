@@ -538,7 +538,7 @@ class MainWindow(QMainWindow, WindowMixin):
         for label, points, line_color, fill_color in shapes:
             shape = Shape(label=label)
             for x, y in points:
-                shape.addPoint(QPointF(x, y))
+                shape.addPointOld(QPointF(x, y))
             shape.close()
             s.append(shape)
             self.addLabel(shape)
