@@ -187,28 +187,114 @@ class Shape(object):
         self.points = [p + offset for p in self.points]
 
     # msserpa: this new version of moveVertex is used to handle the moves and
-    # keep the polygon a square.
-    def moveVertexBy(self, i, offset):
+    # keep the polygon a square.def moveVertexBy(self, i, offset):
         if i == 0:
-            self.points[0] = QPointF(self.points[0].x() + offset.x(), self.points[0].y() + offset.y())
-            self.points[1] = QPointF(self.points[1].x() + offset.x(), self.points[1].y() - offset.y())
-            self.points[2] = QPointF(self.points[2].x() - offset.x(), self.points[2].y() - offset.y())
-            self.points[3] = QPointF(self.points[3].x() - offset.x(), self.points[3].y() + offset.y())            
+            if offset.x() >= 0 or offset.y() >= 0:
+                offset = QPointF(+0.5, +0.5)
+            else:
+                offset = QPointF(-0.5, -0.5)
+
+            old_sup_esq = self.points[0]
+            old_inf_esq = self.points[1]
+            old_inf_dir = self.points[2]
+            old_sup_dir = self.points[3]
+
+            self.points[0] = self.points[0] + offset
+
+            sup_dir_x = old_sup_dir.x() - offset.x()
+
+            inf_esq_x = self.points[0].x()
+            inf_dir_x = sup_dir_x
+
+            inf_esq_y = old_inf_esq.y() - offset.y()
+            
+            sup_dir_y = self.points[0].y()
+            inf_dir_y = inf_esq_y
+
+            self.points[1] = QPointF(inf_esq_x, inf_esq_y)
+            self.points[2] = QPointF(inf_dir_x, inf_dir_y)
+            self.points[3] = QPointF(sup_dir_x, sup_dir_y)
         elif i == 1:
-            self.points[0] = QPointF(self.points[0].x() + offset.x(), self.points[0].y() - offset.y())
-            self.points[1] = QPointF(self.points[1].x() + offset.x(), self.points[1].y() + offset.y())
-            self.points[2] = QPointF(self.points[2].x() - offset.x(), self.points[2].y() + offset.y())
-            self.points[3] = QPointF(self.points[3].x() - offset.x(), self.points[3].y() - offset.y())
+            if offset.x() >= 0 or offset.y() <= 0:
+                offset = QPointF(+0.5, -0.5)
+            else:
+                offset = QPointF(-0.5, +0.5)
+
+            old_sup_esq = self.points[0]
+            old_inf_esq = self.points[1]
+            old_inf_dir = self.points[2]
+            old_sup_dir = self.points[3]
+
+            self.points[1] = self.points[1] + offset
+
+            sup_dir_x = old_sup_dir.x() - offset.x()
+
+            sup_esq_x = self.points[1].x()
+            inf_dir_x = sup_dir_x
+
+            sup_esq_y = old_sup_esq.y() - offset.y()
+            
+            sup_dir_y = sup_esq_y
+            inf_dir_y = self.points[1].y()
+
+            self.points[0] = QPointF(sup_esq_x, sup_esq_y)
+            self.points[2] = QPointF(inf_dir_x, inf_dir_y)
+            self.points[3] = QPointF(sup_dir_x, sup_dir_y)
         elif i == 2:
-            self.points[0] = QPointF(self.points[0].x() - offset.x(), self.points[0].y() - offset.y())
-            self.points[1] = QPointF(self.points[1].x() - offset.x(), self.points[1].y() + offset.y())
-            self.points[2] = QPointF(self.points[2].x() + offset.x(), self.points[2].y() + offset.y())
-            self.points[3] = QPointF(self.points[3].x() + offset.x(), self.points[3].y() - offset.y())
+            if offset.x() >= 0 or offset.y() >= 0:
+                offset = QPointF(+0.5, +0.5)
+            else:
+                offset = QPointF(-0.5, -0.5)
+
+            old_sup_esq = self.points[0]
+            old_inf_esq = self.points[1]
+            old_inf_dir = self.points[2]
+            old_sup_dir = self.points[3]
+
+            self.points[2] = self.points[2] + offset
+
+            sup_esq_x = old_sup_esq.x() - offset.x()
+
+            inf_esq_x = sup_esq_x
+            sup_dir_x = self.points[2].x()
+
+            sup_esq_y = old_sup_esq.y() - offset.y()
+            
+            sup_dir_y = sup_esq_y
+            inf_esq_y = self.points[2].y()
+
+            self.points[0] = QPointF(sup_esq_x, sup_esq_y)
+            self.points[1] = QPointF(inf_esq_x, inf_esq_y)
+            self.points[3] = QPointF(sup_dir_x, sup_dir_y)
         elif i == 3:
-            self.points[0] = QPointF(self.points[0].x() - offset.x(), self.points[0].y() + offset.y())
-            self.points[1] = QPointF(self.points[1].x() - offset.x(), self.points[1].y() - offset.y())
-            self.points[2] = QPointF(self.points[2].x() + offset.x(), self.points[2].y() - offset.y())
-            self.points[3] = QPointF(self.points[3].x() + offset.x(), self.points[3].y() + offset.y())
+            if offset.x() >= 0 or offset.y() <= 0:
+                offset = QPointF(+0.5, -0.5)
+            else:
+                offset = QPointF(-0.5, +0.5)
+
+            old_sup_esq = self.points[0]
+            old_inf_esq = self.points[1]
+            old_inf_dir = self.points[2]
+            old_sup_dir = self.points[3]
+
+            self.points[3] = self.points[3] + offset
+
+            inf_esq_x = old_inf_esq.x() - offset.x()
+
+            sup_esq_x = inf_esq_x
+            inf_dir_x = self.points[3].x()
+
+            inf_esq_y = old_inf_esq.y() - offset.y()
+            
+            sup_esq_y = self.points[3].y()
+            inf_dir_y = inf_esq_y
+
+            self.points[0] = QPointF(sup_esq_x, sup_esq_y)
+            self.points[1] = QPointF(inf_esq_x, inf_esq_y)
+            self.points[2] = QPointF(inf_dir_x, inf_dir_y)
+        
+        if ((abs(distance(self.points[0] - self.points[1]) + distance(self.points[1] - self.points[2]) + distance(self.points[2] - self.points[3]) + distance(self.points[3] - self.points[0]) - 4 * distance(self.points[3] - self.points[0])) - 0.1) < 0) == False:
+            print "Error: it isn't a square!", (abs(distance(self.points[0] - self.points[1]) + distance(self.points[1] - self.points[2]) + distance(self.points[2] - self.points[3]) + distance(self.points[3] - self.points[0]) - 4 * distance(self.points[3] - self.points[0])) - 0.1)
 
     def highlightVertex(self, i, action):
         self._highlightIndex = i
